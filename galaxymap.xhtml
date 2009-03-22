@@ -11,6 +11,9 @@
 	<meta name="generator"   content="gvim7.1"/>
 	<meta name="copyright"   content="2009(c)"/>
 
+	<script src="jquery.js" type="text/javascript"></script>
+	<script src="ui/ui.core.js" type="text/javascript"></script>
+	<script src="ui/ui.draggable.js" type="text/javascript"></script>
 	<!-- sylvester matrix library; http://sylvester.jcoglan.com -->
 	<!-- uncompressed -->
 	<script src="sylvester.src.js" type="text/javascript"></script>
@@ -23,6 +26,48 @@
 	<link href="base.css" rel="stylesheet" type="text/css"></link>
 </head>
 <body resize="rh" >
+
+<style>
+.dialog { padding:.3em;left:500px;position:absolute;width:275px; }
+.formInput { width:75px; font-size:10px; }
+h2 { margin: 0 0 6px 0; }
+</style>
+
+<div
+	id="gluLookAtDiv"
+	class="dialog"
+	style="background-color:#666699;top:45px;">
+	<h2>gluLookAt</h2>
+	e
+	<input type="text" class="formInput" id="ex"/>,
+	<input type="text" class="formInput" id="ey"/>,
+	<input type="text" class="formInput" id="ez"/>,<br/>
+	c
+	<input type="text" class="formInput" id="cx"/>,
+	<input type="text" class="formInput" id="cy"/>,
+	<input type="text" class="formInput" id="cz"/>,<br/>
+	u
+	<input type="text" class="formInput" id="ux"/>,
+	<input type="text" class="formInput" id="uy"/>,
+	<input type="text" class="formInput" id="uz"/><br/>
+	<input type="button" value="update" style="margin-top:6px;" onclick="refreshLookAt();" />
+</div>
+
+<div
+	id="pipelineDiv"
+	class="dialog"
+	style="background-color:#669966;top:220px;">
+	<h2>pipeline</h2>
+	points<br/>
+	<textarea rows="4" cols="31" wrap="off" id="pointsM" /><br/>
+	view<br/>
+	<textarea rows="4" cols="31" wrap="off" id="viewM" /><br/>
+	perspective<br/>
+	<textarea rows="4" cols="31" wrap="off" id="perspectiveM" /><br/>
+	results<br/>
+	<textarea rows="4" cols="31" wrap="off" id="resultsM" /><br/>
+</div>
+
 
 <!-- common style -->
 <svg
@@ -81,6 +126,56 @@
 var canvas = document.getElementById("view1");
 window.onresize = resizeHandler(canvas);
 //window.onresize({target:window});
+
+$("#gluLookAtDiv").draggable();
+$("#pipelineDiv").draggable();
+
+buildDocumentRepresentation("gluLookAtDiv", "cx", "cy", "cz", "ex", "ey", "ez", "ux", "uy", "uz");
+buildDocumentRepresentation("pipelineDiv", "pointsM", "viewM", "perspectiveM", "resultsM");
+
+function refreshLookAt()
+{
+	if(window.gluLookAtDiv)
+		gluLookAt( 
+			gluLookAtDiv.ex.value, gluLookAtDiv.ey.value, gluLookAtDiv.ez.value,
+			gluLookAtDiv.cx.value, gluLookAtDiv.cy.value, gluLookAtDiv.cz.value,
+			gluLookAtDiv.ux.value, gluLookAtDiv.uy.value, gluLookAtDiv.uz.value );
+			
+}
+
+
+
+// setup client viewport
+
+console.log("look at");
+var s = 6;
+var d = [0, 1e11, 0];
+var view= gluLookAt( rit[s][4]+d[0], rit[s][5]+d[1], rit[s][6]+d[2], 
+                     rit[s][4], rit[s][5], rit[s][6]);
+
+
+console.log("perspective");
+var m = 70e7;
+var n = 1e1;
+var f = 1e10;
+var perspective= glFrustum(-m,m,-m,m,n,f);
+//var t_viewing = perspective.x(view);
+
+console.log("camera");
+var mainCamera = new camera(view,perspective);
+
+// setup nodes
+console.log("constellation root");
+root = constellationNode(rit,renderer);
+
+
+// render
+
+var viewport = document.getElementById("view1");
+//var scene = universe.render(cam,canvas)
+
+console.log("render");
+root.render(mainCamera,viewport);
 
 // ]]>
 </script>

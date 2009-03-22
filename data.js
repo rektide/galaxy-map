@@ -14,35 +14,6 @@ var rit= [
 ]
 
 
-// setup client viewport
-
-var s = 6;
-var d = [0, 1e11, 0];
-var view= gluLookAt( rit[s][4]+d[0], rit[s][5]+d[1], rit[s][6]+d[2], 
-                     rit[s][4], rit[s][5], rit[s][6]);
-
-
-var m = 70e7;
-var n = 1e1;
-var f = 1e10;
-var perspective= glFrustum(-m,m,-m,m,n,f);
-//var t_viewing = perspective.x(view);
-
-var camera = new camera(view,perspective);
-mainCamera = camera;
-
-// setup nodes
-
-root = constellationNode(rit,renderer);
-
-
-
-// render
-
-var viewport = document.getElementById("view1");
-root.render(camera,viewport);
-
-//var scene = universe.render(cam,canvas)
 
 //print("view");
 //print(view.inspect());

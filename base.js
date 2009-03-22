@@ -7,7 +7,7 @@ function writeSetter(o,prop) {
 };
 function writeSetters(o) {
 	o = o.prototype;
-	for(var i= 1; i < arguments.length - 1; i++)
+	for(var i= 1; i < arguments.length; i++)
 		writeSetter(o,arguments[i]);
 };
 
@@ -15,3 +15,11 @@ writeSetters(SVGCircleElement, "cx", "cy", "r", "fill", "style");
 writeSetters(SVGSVGElement, "x", "y", "height", "width"); // does not appear to work
 
 
+function buildDocumentRepresentation(target)
+{
+	var t = window[target] = new Object();
+	var i = 1;
+	for(var i= 1; i < arguments.length; i++)
+		t[arguments[i]] = document.getElementById(arguments[i]);
+	return t;
+}

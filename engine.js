@@ -13,6 +13,21 @@ function gluLookAt(eX,eY,eZ,cX,cY,cZ,uX,uY,uZ)
 	var e = $V([eX,eY,eZ]);
 	var up = (arguments.length>6) ? $V([uX,uY,uZ]).toUnitVector() : arguments.callee.defaultUp;
 
+	if(window.gluLookAtDiv)
+	{
+		console.log("detouring to write gluLookAt");
+		gluLookAtDiv.ex.value=eX;
+		gluLookAtDiv.ey.value=eY;
+		gluLookAtDiv.ez.value=eZ;
+		gluLookAtDiv.cx.value=cX;
+		gluLookAtDiv.cy.value=cY;
+		gluLookAtDiv.cz.value=cZ;
+		gluLookAtDiv.ux.value=up.e(1);
+		gluLookAtDiv.uy.value=up.e(2);
+		gluLookAtDiv.uz.value=up.e(3);
+	}
+
+
 	var k = $V([eX-cX,eY-cY,eZ-cZ]).toUnitVector();
 	var i = up.cross(k);
 	var j = k.cross(i);
@@ -74,7 +89,18 @@ function camera(view,perspective,clip)
 
 	this.transform= function(l)
 	{
-		return this.matrix.x(l.transpose());
+		var results = l.x(this.view).x(this.perspective);
+
+		if(window.pipelineDiv)
+		{
+			console.log("detouring to write our present pipeline");
+			pipelineDiv.pointsM.innerHTML = l.inspect();
+			pipelineDiv.viewM.innerHTML = this.view.inspect();
+			pipelineDiv.perspectiveM.innerHTML = this.perspective.inspect();
+			pipelineDiv.resultsM.innerHTML = results.inspect();
+		}
+
+		return results;
 	}
 
 	this.clip = function(l,m)
