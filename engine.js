@@ -10,12 +10,11 @@ print("");
 // http://www.dgp.toronto.edu/~ah/csc418/fall_2001/notes/viewing.html
 function gluLookAt(eX,eY,eZ,cX,cY,cZ,uX,uY,uZ)
 {
-	var e = $V([eX,eY,eZ]);
 	var up = (arguments.length>6) ? $V([uX,uY,uZ]).toUnitVector() : arguments.callee.defaultUp;
 
 	if(window.gluLookAtDiv)
 	{
-		console.log("detouring to write gluLookAt");
+		console.log("detouring to write gluLookAt", arguments);
 		gluLookAtDiv.ex.value=eX;
 		gluLookAtDiv.ey.value=eY;
 		gluLookAtDiv.ez.value=eZ;
@@ -27,7 +26,7 @@ function gluLookAt(eX,eY,eZ,cX,cY,cZ,uX,uY,uZ)
 		gluLookAtDiv.uz.value=up.e(3);
 	}
 
-
+	var e = $V([eX,eY,eZ]);
 	var k = $V([eX-cX,eY-cY,eZ-cZ]).toUnitVector();
 	var i = up.cross(k);
 	var j = k.cross(i);
@@ -89,7 +88,9 @@ function camera(view,perspective,clip)
 
 	this.transform= function(l)
 	{
-		var results = l.x(this.view).x(this.perspective);
+		//var results = l.x(this.view).x(this.perspective);
+		var results = this.view.x(l.transpose());
+		results = this.perspective.x(results);
 
 		if(window.pipelineDiv)
 		{
@@ -106,11 +107,11 @@ function camera(view,perspective,clip)
 	this.clip = function(l,m)
 	{
 		if(!m) m = [];
-		for(var i = 0; i < l.cols(); ++i)
+		for(var i = 0; i < l.rows(); ++i)
 		{
 			if(this.clipping) 
 			{
-				var p = l.col(i).elements;
+				var p = l.row(i).elements;
 				m[i] = this.clipping[0] <= p[0] && this.clipping[1] >= p[0] &&
 				       this.clipping[2] <= p[1] && this.clipping[3] >= p[1]; 
 			}

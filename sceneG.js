@@ -44,13 +44,17 @@ function transformPointRenderer(painter)
 
 		n.raster = camera.transform(n.points);
 		n.clipped = camera.clip(n.raster) // , n.clipped);
-	
+
+		var debugPointList = ["debugPointList"];
+		painter.reset();
 		for(var i = 0; i < n.clipped.length; ++i)
 			if(n.clipped[i])
 			{
 				children = true;
 				painter.paint(n.raster.e(1,i+1),n.raster.e(2,i+1),arguments);
+				debugPointList.push("["+n.raster.e(1,i+1)+","+n.raster.e(2,i+1)+"]");
 			}
+		console.log.call(console,debugPointList.join(""));
 		return children;
 	}
 }
@@ -58,6 +62,12 @@ function transformPointRenderer(painter)
 function svgPointPainter(pointQueue)
 {
 	this.pq = pointQueue;
+
+	this.reset = function()
+	{
+		pq.undraw();
+	}
+	
 
 	this.paint = function(x,y,args)
 	{
@@ -79,7 +89,7 @@ function pointQueue(create,clear)
 	this.pos = 0;
 	this.create = create;
 	this.clear = clear;
-	
+
 	this.pop = function()
 	{
 		if(!this.queue[this.pos]) this.queue[this.pos] = this.create();
@@ -89,8 +99,15 @@ function pointQueue(create,clear)
 	this.undraw = function(clear)
 	{
 		var c = (clear) ? clear : this.clear;
+		this.pos = 0;
 		while(this.queue[this.pos])
 			c(this.queue[this.pos++]);
+		this.pos = 0;
+	}
+
+	this.length= function()
+	{
+		return this.pos;
 	}
 }
 

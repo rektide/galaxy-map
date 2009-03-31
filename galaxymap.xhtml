@@ -136,10 +136,15 @@ buildDocumentRepresentation("pipelineDiv", "pointsM", "viewM", "perspectiveM", "
 function refreshLookAt()
 {
 	if(window.gluLookAtDiv)
-		gluLookAt( 
+	{
+		var view = gluLookAt( 
 			gluLookAtDiv.ex.value, gluLookAtDiv.ey.value, gluLookAtDiv.ez.value,
 			gluLookAtDiv.cx.value, gluLookAtDiv.cy.value, gluLookAtDiv.cz.value,
 			gluLookAtDiv.ux.value, gluLookAtDiv.uy.value, gluLookAtDiv.uz.value );
+
+		mainCamera.view = view;
+		root.render(mainCamera,viewport)
+	}
 			
 }
 
@@ -147,25 +152,25 @@ function refreshLookAt()
 
 // setup client viewport
 
-console.log("look at");
-var s = 6;
-var d = [0, 1e11, 0];
+console.log("pipeline setup: look at");
+var s = 0;
+var d = [0, 0, 4];
 var view= gluLookAt( rit[s][4]+d[0], rit[s][5]+d[1], rit[s][6]+d[2], 
                      rit[s][4], rit[s][5], rit[s][6]);
 
 
-console.log("perspective");
-var m = 70e7;
-var n = 1e1;
-var f = 1e10;
+console.log("pipeline setup: perspective");
+var m = .25;
+var n = .25;
+var f = 4;
 var perspective= glFrustum(-m,m,-m,m,n,f);
 //var t_viewing = perspective.x(view);
 
-console.log("camera");
+console.log("pipeline setup: camera");
 var mainCamera = new camera(view,perspective);
 
 // setup nodes
-console.log("constellation root");
+console.log("pipeline setup: constellation root");
 root = constellationNode(rit,renderer);
 
 

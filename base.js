@@ -15,6 +15,7 @@ writeSetters(SVGCircleElement, "cx", "cy", "r", "fill", "style");
 writeSetters(SVGSVGElement, "x", "y", "height", "width"); // does not appear to work
 
 
+// build an object that contains a lot of dom children
 function buildDocumentRepresentation(target)
 {
 	var t = window[target] = new Object();
@@ -23,3 +24,7 @@ function buildDocumentRepresentation(target)
 		t[arguments[i]] = document.getElementById(arguments[i]);
 	return t;
 }
+
+
+// define console if its not there
+if(!window.console) window.console = {log:function(){}};
