@@ -8,16 +8,26 @@ print("");
 
 // http://www.cs.kuleuven.ac.be/cwis/research/graphics/INFOTEC/viewing-in-3d/node4.html
 // http://www.dgp.toronto.edu/~ah/csc418/fall_2001/notes/viewing.html
+function gluLookFrom(eX,eY,eZ,cX,cY,cZ,uX,uY,uZ)
+{
+	if(arguments.length>6)
+		return gluLookAt(eX+cX,eY+cY,eZ+cZ,cX,cY,cZ,uX,uY,uZ);
+	else
+		return gluLookAt(eX+cX,eY+cY,eZ+cZ,cX,cY,cZ);
+
+}
+
 function gluLookAt(eX,eY,eZ,cX,cY,cZ,uX,uY,uZ)
 {
 	var up = (arguments.length>6) ? $V([uX,uY,uZ]).toUnitVector() : arguments.callee.defaultUp;
 
 	if(window.gluLookAtDiv)
 	{
-		console.log("detouring to write gluLookAt", arguments);
-		gluLookAtDiv.ex.value=eX;
-		gluLookAtDiv.ey.value=eY;
-		gluLookAtDiv.ez.value=eZ;
+		var dx = eX-cX, dy = eY-cY, dz = eZ-cZ;
+		console.log("detour gluLookAt", arguments, [dx,dy,dz]);
+		gluLookAtDiv.ex.value=dx;
+		gluLookAtDiv.ey.value=dy;
+		gluLookAtDiv.ez.value=dz;
 		gluLookAtDiv.cx.value=cX;
 		gluLookAtDiv.cy.value=cY;
 		gluLookAtDiv.cz.value=cZ;
@@ -90,11 +100,11 @@ function camera(view,perspective,clip)
 	{
 		//var results = l.x(this.view).x(this.perspective);
 		var results = this.view.x(l.transpose());
-		results = this.perspective.x(results);
+		results = this.perspective.x(results).transpose();
 
 		if(window.pipelineDiv)
 		{
-			console.log("detouring to write our present pipeline");
+			console.log("detour pipeline");
 			pipelineDiv.pointsM.innerHTML = l.inspect();
 			pipelineDiv.viewM.innerHTML = this.view.inspect();
 			pipelineDiv.perspectiveM.innerHTML = this.perspective.inspect();

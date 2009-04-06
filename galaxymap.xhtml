@@ -137,10 +137,10 @@ function refreshLookAt()
 {
 	if(window.gluLookAtDiv)
 	{
-		var view = gluLookAt( 
-			gluLookAtDiv.ex.value, gluLookAtDiv.ey.value, gluLookAtDiv.ez.value,
-			gluLookAtDiv.cx.value, gluLookAtDiv.cy.value, gluLookAtDiv.cz.value,
-			gluLookAtDiv.ux.value, gluLookAtDiv.uy.value, gluLookAtDiv.uz.value );
+		var view = gluLookFrom( 
+			gluLookAtDiv.ex.value * 1.0, gluLookAtDiv.ey.value * 1.0, gluLookAtDiv.ez.value * 1.0,
+			gluLookAtDiv.cx.value * 1.0, gluLookAtDiv.cy.value * 1.0, gluLookAtDiv.cz.value * 1.0,
+			gluLookAtDiv.ux.value * 1.0, gluLookAtDiv.uy.value * 1.0, gluLookAtDiv.uz.value * 1.0);
 
 		mainCamera.view = view;
 		root.render(mainCamera,viewport)
@@ -153,10 +153,10 @@ function refreshLookAt()
 // setup client viewport
 
 console.log("pipeline setup: look at");
-var s = 0;
-var d = [0, 0, 4];
-var view= gluLookAt( rit[s][4]+d[0], rit[s][5]+d[1], rit[s][6]+d[2], 
-                     rit[s][4], rit[s][5], rit[s][6]);
+var s = 1;
+var d = [-10000, -10000, 1400000000000];
+var view= gluLookFrom( d[0], d[1], d[2],
+                       rit[s][4], rit[s][5], rit[s][6] );
 
 
 console.log("pipeline setup: perspective");

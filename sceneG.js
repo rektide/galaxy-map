@@ -45,16 +45,13 @@ function transformPointRenderer(painter)
 		n.raster = camera.transform(n.points);
 		n.clipped = camera.clip(n.raster) // , n.clipped);
 
-		var debugPointList = ["debugPointList"];
 		painter.reset();
 		for(var i = 0; i < n.clipped.length; ++i)
 			if(n.clipped[i])
 			{
 				children = true;
-				painter.paint(n.raster.e(1,i+1),n.raster.e(2,i+1),arguments);
-				debugPointList.push("["+n.raster.e(1,i+1)+","+n.raster.e(2,i+1)+"]");
+				painter.paint(n.raster.e(i+1,1),n.raster.e(i+1,2),arguments);
 			}
-		console.log.call(console,debugPointList.join(""));
 		return children;
 	}
 }
